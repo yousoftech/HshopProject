@@ -64,6 +64,10 @@ public class SelectSubCategoryDetailAdapter extends RecyclerView.Adapter<SelectS
     int qty=0;
     String ode_id1;
     int ich=0;
+    public boolean unitch=false;
+    public LinearLayout unitlin;
+    public ImageView unarrow;
+    public int adpp;
 
 
     public SelectSubCategoryDetailAdapter(Context context,List<AllProductSubCategoryDetailsList> getAllProductLists,String id,String name) {
@@ -103,17 +107,27 @@ public class SelectSubCategoryDetailAdapter extends RecyclerView.Adapter<SelectS
         gmailVH.h_p_offer.setText(Html.fromHtml(text8));
         gmailVH.h_p_unit.setText(Html.fromHtml(text11));
         gmailVH.unitarrow.setImageResource(R.drawable.ic_arrow_down);
+        gmailVH.unitlinear.setVisibility(View.GONE);
         gmailVH.unitlin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(Integer.parseInt(gmailVH.txtich.getText().toString())>1) {
                     if (gmailVH.unitlinear.getVisibility() == View.VISIBLE) {
+                        unitch=false;
                         gmailVH.unitlinear.setVisibility(View.GONE);
                         gmailVH.unitarrow.setImageDrawable(null);
                         gmailVH.unitarrow.setImageResource(R.drawable.ic_arrow_down);
-
                     } else {
+                        if(unitch==true)
+                        {
+                            unitlin.setVisibility(View.GONE);
+                            unarrow.setImageResource(R.drawable.ic_arrow_down);
+                        }
                         gmailVH.unitlinear.setVisibility(View.VISIBLE);
+                        unitch=true;
+                        adpp = gmailVH.getAdapterPosition();
+                        unitlin=gmailVH.unitlinear;
+                        unarrow=gmailVH.unitarrow;
                         gmailVH.unitarrow.setImageDrawable(null);
                         gmailVH.unitarrow.setImageResource(R.drawable.ic_arrow_up);
                     }
@@ -316,6 +330,8 @@ public class SelectSubCategoryDetailAdapter extends RecyclerView.Adapter<SelectS
 
     }
 
+    private void show(LinearLayout unitlinear) {
+    }
 
 
     private void userproductadd(final GmailVH gmailVH, String mem_string, String user_id, String pro_id, String ode_id, String tpd_id) {
