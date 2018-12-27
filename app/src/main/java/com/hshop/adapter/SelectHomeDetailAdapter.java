@@ -1,5 +1,6 @@
 package com.hshop.adapter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -35,7 +36,10 @@ import com.hshop.models.AllHomeProductList;
 import com.hshop.models.UserAddCart;
 import com.hshop.rest.Config;
 import com.hshop.rest.RestClient;
+import com.hshop.shopping.Home;
 import com.hshop.shopping.Master_Home;
+import com.hshop.shopping.Product;
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -82,12 +86,15 @@ public class SelectHomeDetailAdapter extends RecyclerView.Adapter<SelectHomeDeta
         String text2 = String.format(res.getString(R.string.txt_message223), getallHomeAllProductLists.get(i).getPro_image());
         String text3 = String.format(res.getString(R.string.txt_message223), getallHomeAllProductLists.get(i).getPro_offer());
         String text4 = String.format(res.getString(R.string.txt_message223), getallHomeAllProductLists.get(i).getPro_actualcost());
+        String txt4=text3.replace("₹","");
         String text5 = String.format(res.getString(R.string.txt_message223),getallHomeAllProductLists.get(i).getPro_offercost());
         String text6 = String.format(res.getString(R.string.txt_message223), getallHomeAllProductLists.get(i).getPro_name());
         String text7 = String.format(res.getString(R.string.txt_message223), getallHomeAllProductLists.get(i).getPro_unit());
         String ode_id=String.format(res.getString(R.string.txt_message223), getallHomeAllProductLists.get(i).getOde_id());
+        String qtychk=String.format(res.getString(R.string.txt_message223), getallHomeAllProductLists.get(i).getQtyadd());
         //getunit(gmailVH,text1);
-
+        gmailVH.odetest.setText(ode_id);
+        gmailVH.qtycheck.setText(qtychk);
         gmailVH.h_p_offer.setText(text3);
         gmailVH.h_p_name.setText(text6);
         gmailVH.h_p_unit.setText(text7);
@@ -99,9 +106,9 @@ public class SelectHomeDetailAdapter extends RecyclerView.Adapter<SelectHomeDeta
             @Override
             public void onClick(View view) {
 
-                String l=context.getResources().getString(R.string.limit);
+                String l=gmailVH.qtycheck.getText().toString();
                 if(Integer.parseInt(l)>Integer.parseInt(gmailVH.c_quantity.getText().toString())) {
-                    userproductadd(gmailVH, Config.mem_string, getallHomeAllProductLists.get(i).getUser_id(), getallHomeAllProductLists.get(i).getPro_id(), getallHomeAllProductLists.get(i).getOde_id(), getallHomeAllProductLists.get(i).getTpd_id());
+                    userproductadd(gmailVH, Config.mem_string, getallHomeAllProductLists.get(i).getUser_id(), getallHomeAllProductLists.get(i).getPro_id(), gmailVH.odetest.getText().toString(), getallHomeAllProductLists.get(i).getTpd_id());
                 }
                 else
                 {
@@ -113,7 +120,7 @@ public class SelectHomeDetailAdapter extends RecyclerView.Adapter<SelectHomeDeta
         gmailVH.c_minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userproductminus(gmailVH,Config.mem_string,getallHomeAllProductLists.get(i).getUser_id(),getallHomeAllProductLists.get(i).getPro_id(),getallHomeAllProductLists.get(i).getOde_id(),getallHomeAllProductLists.get(i).getTpd_id());
+                userproductminus(gmailVH,Config.mem_string,getallHomeAllProductLists.get(i).getUser_id(),getallHomeAllProductLists.get(i).getPro_id(),gmailVH.odetest.getText().toString(),getallHomeAllProductLists.get(i).getTpd_id());
             }
         });
 
@@ -178,7 +185,7 @@ public class SelectHomeDetailAdapter extends RecyclerView.Adapter<SelectHomeDeta
             @Override
             public void onClick(View view) {
 
-                addtocart(Config.mem_string, getallHomeAllProductLists.get(i).getUser_id(),getallHomeAllProductLists.get(i).getPro_id(),getallHomeAllProductLists.get(i).getTpd_id());
+                addtocart(gmailVH,Config.mem_string, getallHomeAllProductLists.get(i).getUser_id(),getallHomeAllProductLists.get(i).getPro_id(),getallHomeAllProductLists.get(i).getTpd_id());
 //                gmailVH.count.setText( TotalCount );
          //       Master_Home master= new Master_Home(TotalCount);
             }
@@ -279,7 +286,8 @@ public class SelectHomeDetailAdapter extends RecyclerView.Adapter<SelectHomeDeta
 
                         String ttl=gmailVH.c_quantity.getText().toString();
                         gmailVH.c_quantity.setText(String.valueOf(Integer.parseInt(ttl)+1));
-
+                        TextView txtcart=(TextView) ((Master_Home)context).findViewById(R.id.cart_badge);
+                        txtcart.setText(String.valueOf(Integer.parseInt(txtcart.getText().toString())+1));
                     }
                     else
                     {
@@ -316,12 +324,16 @@ public class SelectHomeDetailAdapter extends RecyclerView.Adapter<SelectHomeDeta
                         //((Cart)context).callCartData();
                         String ttl=gmailVH.c_quantity.getText().toString();
                         gmailVH.c_quantity.setText(String.valueOf(Integer.parseInt(ttl)-1));
+                        TextView txtcart=((Master_Home)context).findViewById(R.id.cart_badge);
+                        txtcart.setText(String.valueOf(Integer.parseInt(txtcart.getText().toString())-1));
                         if(gmailVH.c_quantity.getText().toString().equals("0"))
                         {
-                            Intent i1 = new Intent(context.getApplicationContext(),Master_Home.class);
+                            gmailVH.h_p_add.setVisibility(View.VISIBLE);
+                            gmailVH.cartadd_min.setVisibility(View.GONE);
+                            /*Intent i1 = new Intent(context.getApplicationContext(),Master_Home.class);
                             i1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             context.startActivity(i1);
-                            ((Master_Home)context).finish();
+                            ((Master_Home)context).finish();*/
                         }
                     }
                     else
@@ -343,25 +355,37 @@ public class SelectHomeDetailAdapter extends RecyclerView.Adapter<SelectHomeDeta
     }
 
 
-    private void addtocart(String mem_string, final String user_id, String pro_id, String tpd_id) {
+    private void addtocart(final GmailVH gmailVH, String mem_string, final String user_id, final String pro_id, String tpd_id) {
+        final ProgressDialog progressdialog = new ProgressDialog(context);
+        progressdialog.setMessage("Please Wait....");
+        progressdialog.show();
         RestClient.GitApiInterface service = RestClient.getClient();
         Call<UserAddCart> call = service.getUserCartAdd(mem_string,user_id,pro_id,tpd_id);
         call.enqueue(new Callback<UserAddCart>() {
 
             @Override
             public void onResponse(Response<UserAddCart> response) {
-
+                progressdialog.dismiss();
                 Log.d("SplashActivity", "Status Code = " + response.code());
                 if (response.isSuccess()) {
                     // request successful (status code 200, 201)
                     UserAddCart result = response.body();
-                    if(result.getStatus().equals("success")) {
+                    if(result.getStatus().contains("success")) {
+                        String s1=response.body().getStatus().toString();
+                        s1=s1.replace("success = ","");
+                        gmailVH.odetest.setText(s1);
+                        gmailVH.h_p_add.setVisibility(View.GONE);
+                        gmailVH.cartadd_min.setVisibility(View.VISIBLE);
+                        gmailVH.c_quantity.setText("1");
+                        TextView txtcart=((Master_Home)context).findViewById(R.id.cart_badge);
+                        txtcart.setText(String.valueOf(Integer.parseInt(txtcart.getText().toString())+1));
                      // home.callCartData( user_id );
-                       Intent i1 = new Intent(context.getApplicationContext(),Master_Home.class);
+                       /*Intent i1 = new Intent(context.getApplicationContext(),Master_Home.class);
                         i1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                        context.startActivity(i1);
+                        ((Master_Home)context).finish();*/
 
-                        ((Master_Home)context).finish();
+
 
                     }
                     else
@@ -397,12 +421,12 @@ public class SelectHomeDetailAdapter extends RecyclerView.Adapter<SelectHomeDeta
         TextView c_quantity;
         Button c_plus;
         TextView h_p_actual_cost;
-        TextView h_p_offer_cost;
+        TextView h_p_offer_cost,odetest;
         ImageView h_p_image;
         CardView card_view;
         Button h_p_add;
         //Spinner spinner1;
-        TextView count;
+        TextView count,qtycheck;
 
 
         public GmailVH(View itemView) {
@@ -423,7 +447,8 @@ public class SelectHomeDetailAdapter extends RecyclerView.Adapter<SelectHomeDeta
            // spinner1 = (Spinner) itemView.findViewById(R.id.spinner1);
             h_p_add = (Button) itemView.findViewById(R.id.h_p_add);
             card_view.setOnClickListener(this);
-
+            odetest = (TextView) itemView.findViewById(R.id.odeidtest);
+            qtycheck=(TextView)itemView.findViewById(R.id.qtycheck);
         }
 
         @Override

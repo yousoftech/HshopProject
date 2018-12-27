@@ -8,10 +8,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Category"
-        android:textSize="15dp"
-        android:textStyle="bold"
+        android:textSize="14dp"
         android:padding="10dp"
-        android:textColor="#4d4d4d"
+        android:textStyle="bold"
+        android:textColor="#464646"
         android:textAllCaps="true"
         android:background="@drawable/button_round"
 

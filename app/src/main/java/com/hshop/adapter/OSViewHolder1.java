@@ -14,15 +14,11 @@ import android.widget.Toast;
 
 import com.hshop.R;
 import com.hshop.models.AllCancel;
-import com.hshop.models.UserProfile;
 import com.hshop.rest.Config;
 import com.hshop.rest.RestClient;
-import com.hshop.shopping.Cart;
 import com.hshop.shopping.Master_Home;
-import com.hshop.shopping.Profile;
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
-import com.zl.reik.dilatingdotsprogressbar.DilatingDotsProgressBar;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -45,6 +41,7 @@ public class OSViewHolder1 extends GroupViewHolder {
     Context context;
     public OSViewHolder1(View itemView) {
         super(itemView);
+
         or_date = (TextView) itemView.findViewById(R.id.or_date);
         or_status = (TextView) itemView.findViewById(R.id.or_status);
         or_total = (TextView) itemView.findViewById(R.id.or_total);

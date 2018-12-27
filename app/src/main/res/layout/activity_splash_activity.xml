@@ -14,6 +14,14 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:background="@drawable/logo"/>
+    <TextView
+        android:id="@+id/companytxt"
+        android:visibility="invisible"
+        android:layout_below="@id/sp_logo"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

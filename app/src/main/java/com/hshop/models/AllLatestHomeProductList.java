@@ -8,6 +8,16 @@ import com.google.gson.annotations.SerializedName;
 
 public class AllLatestHomeProductList {
 
+    public String getQtyadd() {
+        return qtyadd;
+    }
+
+    public void setQtyadd(String qtyadd) {
+        this.qtyadd = qtyadd;
+    }
+
+    String qtyadd;
+
     String cart_val;
 
     public String getOde_id() {

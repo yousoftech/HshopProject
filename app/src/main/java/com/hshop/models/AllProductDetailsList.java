@@ -8,6 +8,17 @@ import com.google.gson.annotations.SerializedName;
 
 public class AllProductDetailsList {
 
+
+    public String getQtyadd() {
+        return qtyadd;
+    }
+
+    public void setQtyadd(String qtyadd) {
+        this.qtyadd = qtyadd;
+    }
+
+    String qtyadd;
+
     public String getPro_actualcost() {
         return pro_actualcost;
     }
@@ -24,15 +35,6 @@ public class AllProductDetailsList {
         this.pro_description = pro_description;
     }
 
-    public String getOde_id() {
-        return ode_id;
-    }
-
-    public void setOde_id(String ode_id) {
-        this.ode_id = ode_id;
-    }
-
-    String ode_id;
     public String getPro_disclaimer() {
         return pro_disclaimer;
     }

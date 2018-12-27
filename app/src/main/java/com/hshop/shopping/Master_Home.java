@@ -3,25 +3,26 @@ package com.hshop.shopping;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,7 +64,10 @@ public class Master_Home extends AppCompatActivity
     TextView h_name,h_contact,h_address,h_city;
     TextView textCartItemCount;
     List<?> list;
+    public  View fview,fview1;
+    public boolean viewchk,viewchk1;
     JSONObject resobj=null;
+    public int color,color1;
 
 
            int mCartItemCount=0;
@@ -278,6 +282,8 @@ public class Master_Home extends AppCompatActivity
                listAdapter = new ListAdapter();
 
                multiLevelListView.setAdapter(listAdapter);
+
+
                multiLevelListView.setOnItemClickListener(mOnItemClickListener);
 
                listAdapter.setDataItems(CustomDataProvider.getInitialItems());
@@ -348,7 +354,17 @@ public class Master_Home extends AppCompatActivity
                    String id=((BaseItem)object).getId();
                    //Toast.makeText(Master_Home.this, builder.toString(), Toast.LENGTH_SHORT).show();
 
+/*
+                   if(viewchk==true)
+                   {
+                       //fview.setBackgroundColor(color);
+                       viewchk=false;
 
+                   }
+                   color=view.getDrawingCacheBackgroundColor();
+                   //view.setBackgroundColor(R.color.bg8);
+                   viewchk=true;
+                   fview=view;*/
 
                    if (select.equals("Home")) {
                        Fragment selectedFragment = null;
@@ -426,11 +442,33 @@ public class Master_Home extends AppCompatActivity
 
                @Override
                public void onItemClicked(MultiLevelListView parent, View view, Object item, ItemInfo itemInfo) {
+
+                   if(viewchk==true)
+                   {
+                       fview.setBackgroundColor(color);
+                       viewchk=false;
+
+                   }
+                   color=view.getDrawingCacheBackgroundColor();
+                   view.setBackgroundColor(Color.parseColor("#FF58B358"));
+                   viewchk=true;
+                   fview=view;
                    showItemDescription(item, itemInfo);
                }
 
                @Override
                public void onGroupItemClicked(MultiLevelListView parent, View view, Object item, ItemInfo itemInfo) {
+
+                   if(viewchk1==true)
+                   {
+                       fview1.setBackgroundColor(color);
+                       viewchk1=false;
+
+                   }
+                   color1=view.getDrawingCacheBackgroundColor();
+                   view.setBackgroundColor(Color.parseColor("#FF58B358"));
+                   viewchk1=true;
+                   fview1=view;
                    showItemDescription(item, itemInfo);
                }
            };
@@ -486,6 +524,7 @@ public class Master_Home extends AppCompatActivity
                        convertView = LayoutInflater.from(Master_Home.this).inflate(R.layout.data_item, null);
                        //viewHolder.infoView = (TextView) convertView.findViewById(R.id.dataItemInfo);
                        viewHolder.nameView = (TextView) convertView.findViewById(R.id.dataItemName);
+                       //viewHolder.nameView.setTextColor(R.color.black);
                        viewHolder.arrowView = (ImageView) convertView.findViewById(R.id.dataItemArrow);
                        viewHolder.icon= (ImageView) convertView.findViewById(R.id.icon);
                        //viewHolder.levelBeamView = (LevelBeamView) convertView.findViewById(R.id.dataItemLevelBeam);
@@ -495,11 +534,11 @@ public class Master_Home extends AppCompatActivity
                    }
 
                    viewHolder.nameView.setText(((BaseItem) object).getName());
+                   viewHolder.nameView.setTextColor(Color.BLACK);
                    String select=((BaseItem) object).getName();
                    if(select.equals("Home")) {
-
+                       //viewHolder.nameView.setTextColor(R.color.black);
                        viewHolder.icon.setImageResource(R.drawable.ic_navhome);
-
                    }else if(select.equals("Category")){
                        viewHolder.icon.setImageResource(R.drawable.ic_list);
                    }else if(select.equals("My Cart")){
@@ -679,7 +718,12 @@ public class Master_Home extends AppCompatActivity
                                 } else {
                                     //  recyclerView.setVisibility(View.VISIBLE);
                                     //  empty_view.setVisibility(View.GONE);
-                                    int a= getallCartProductLists.size();
+                                    int qty=0;
+                                    for(int i=0;i<result.getProduct().size();i++) {
+                                        AllCartProduct jo = result.getProduct().get(i);
+                                        qty= qty+Integer.parseInt(jo.getOde_quantity());
+                                    }
+                                    int a = qty;
                                     mCartItemCount= a ;
                                     textCartItemCount.setText(a + "");
                                 }

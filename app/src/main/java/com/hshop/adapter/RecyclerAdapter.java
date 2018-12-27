@@ -23,6 +23,8 @@ public class RecyclerAdapter extends ExpandableRecyclerViewAdapter<OSViewHolder,
 
     private Context activity;
     int in=0;
+    public boolean ok;
+    public View viewp;
 
     public RecyclerAdapter(Context activity, List<? extends ExpandableGroup> groups) {
         super(groups);
@@ -33,6 +35,7 @@ public class RecyclerAdapter extends ExpandableRecyclerViewAdapter<OSViewHolder,
     public OSViewHolder onCreateGroupViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.adapter_home1, parent, false);
+        viewp=view;
         return new OSViewHolder(view);
     }
 
@@ -46,9 +49,7 @@ public class RecyclerAdapter extends ExpandableRecyclerViewAdapter<OSViewHolder,
 
     @Override
     public void onBindChildViewHolder(PhoneViewHolder holder, int flatPosition, ExpandableGroup group, int childIndex) {
-        if(in!=0)
-        {
-        }
+
         final Phone phone = ((MobileOS) group).getItems().get(childIndex);
         in=flatPosition;
         holder.onBind(phone,group);
@@ -71,14 +72,20 @@ public class RecyclerAdapter extends ExpandableRecyclerViewAdapter<OSViewHolder,
 
     @Override
     public void onBindGroupViewHolder(OSViewHolder holder, int flatPosition, ExpandableGroup group) {
-        /*
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
+
+           /* holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    OSViewHolder osv=new OSViewHolder(viewp);
+                    if(in!=0)
+                    {
+                        osv.expand();
+                        in=0;
+                    }
+                    osv.collapse();
                 }
-            });
-        */
+            });*/
+
         holder.setGroupName(group);
 
     }

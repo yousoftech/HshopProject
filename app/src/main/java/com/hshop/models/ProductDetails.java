@@ -12,6 +12,16 @@ import java.util.List;
 
 public class ProductDetails {
 
+    public String getOde_id() {
+        return ode_id;
+    }
+
+    public void setOde_id(String ode_id) {
+        this.ode_id = ode_id;
+    }
+
+    String ode_id;
+
     public String getStatus() {
         return status;
     }

@@ -21,6 +21,17 @@ public class UserActiveInfo {
 
     private String offerposterid;
 
+    public String getOfferpostername() {
+        return offerpostername;
+    }
+
+    public void setOfferpostername(String offerpostername) {
+        this.offerpostername = offerpostername;
+    }
+
+    private String offerpostername;
+
+
     public String getOfferposter() {
         return offerposter;
     }

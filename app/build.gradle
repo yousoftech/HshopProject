@@ -2,13 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.hshop"
         minSdkVersion 16
+        multiDexEnabled true
         targetSdkVersion 26
-        versionCode 9
-        versionName "2.5"
+        versionCode 13
+        versionName "4.5"
         testInstrumentationRunner "android  .support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -46,7 +47,9 @@ dependencies {
     implementation 'com.squareup.okhttp:okhttp:2.4.0'
     implementation 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
     implementation 'com.squareup.retrofit:converter-gson:2.0.0-beta1'
+    implementation 'com.github.bumptech.glide:glide:4.6.0'
     implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.android.support:multidex:1.0.0'
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation group: "pl.openrnd.android", name: "multi-level-listview", version: "1.0.1"
     implementation 'com.android.volley:volley:1.1.0'

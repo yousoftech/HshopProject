@@ -1,37 +1,19 @@
 package com.hshop.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hshop.R;
-import com.hshop.models.AllHomeProductList;
 import com.hshop.models.AllSearchProduct;
-import com.hshop.models.UserAddCart;
-import com.hshop.rest.Config;
-import com.hshop.rest.RestClient;
-import com.hshop.shopping.Cart;
-import com.hshop.shopping.Master_Home;
-import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.Response;
 
 
 public class SelectSearchDetailAdapter extends RecyclerView.Adapter<SelectSearchDetailAdapter.GmailVH>{
@@ -70,7 +52,7 @@ public class SelectSearchDetailAdapter extends RecyclerView.Adapter<SelectSearch
      //   gmailVH.txt_unit.setText(text7);
         try
         {
-         //   Picasso.with(context).load(getallSearchProduct.get(i).getPro_image()).into(gmailVH.h_p_image);
+         //   Glide.with(context).load(getallSearchProduct.get(i).getPro_image()).into(gmailVH.h_p_image);
 
         }catch (Exception e)
         {

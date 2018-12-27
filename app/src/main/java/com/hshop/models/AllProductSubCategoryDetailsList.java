@@ -12,6 +12,15 @@ import java.util.List;
 
 public class AllProductSubCategoryDetailsList {
 
+    public String getQtyadd() {
+        return qtyadd;
+    }
+
+    public void setQtyadd(String qtyadd) {
+        this.qtyadd = qtyadd;
+    }
+
+    String qtyadd;
 
     public List<ProductUnit> getPro_unit1() {
         return pro_unit1;

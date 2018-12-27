@@ -23,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.hshop.models.AllProductDetailsList;
 import com.hshop.models.AllProductSubCategoryDetailsList;
 import com.hshop.models.AllProductSubCategoryUnitDetailsList;
@@ -40,6 +41,8 @@ import com.hshop.rest.Config;
 import com.hshop.rest.RestClient;
 import com.hshop.shopping.Master_Home;
 import com.hshop.shopping.Product;
+import com.hshop.shopping.Product_details;
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -68,12 +71,14 @@ public class SelectSubCategoryDetailAdapter extends RecyclerView.Adapter<SelectS
     public LinearLayout unitlin;
     public ImageView unarrow;
     public int adpp;
+    TextView txtcart;
 
 
     public SelectSubCategoryDetailAdapter(Context context,List<AllProductSubCategoryDetailsList> getAllProductLists,String id,String name) {
         this.context = context;
         this.getAllProductLists = getAllProductLists;
         this.id=id;
+        this.txtcart=txtcart;
         this.name=name;
        // this.getAllProductUnitLists = getAllProductUnitLists;
     }
@@ -94,13 +99,20 @@ public class SelectSubCategoryDetailAdapter extends RecyclerView.Adapter<SelectS
         String text6 = String.format(res.getString(R.string.txt_message223), getAllProductLists.get(i).getPro_name());
         String text7 = String.format(res.getString(R.string.txt_message223), getAllProductLists.get(i).getPro_description());
         String text8 = String.format(res.getString(R.string.txt_message223), getAllProductLists.get(i).getPro_offer());
+        String txt8=text8.replace("₹","");
         final List<ProductUnit> pro_unit=getAllProductLists.get(i).getPro_unit1();
         String text9 = String.format(res.getString(R.string.txt_message223), getAllProductLists.get(i).getPro_offercost());
         String text10 = String.format(res.getString(R.string.txt_message223), getAllProductLists.get(i).getPro_actualcost());
         String text11 = String.format(res.getString(R.string.txt_message223), getAllProductLists.get(i).getPro_unit());
+        String qtychk = String.format(res.getString(R.string.txt_message223), getAllProductLists.get(i).getQtyadd());
         final String ode_id=String.format(res.getString(R.string.txt_message223), getAllProductLists.get(i).getOde_id());
-
         gmailVH.h_p_name.setText(text6);
+        gmailVH.l2.setVisibility(View.VISIBLE);
+        if(txt8.equals("0"))
+        {
+            gmailVH.l2.setVisibility(View.INVISIBLE);
+        }
+        gmailVH.qtycheck.setText(qtychk);
         gmailVH.txt_description.setText(Html.fromHtml(text7));
         gmailVH.h_p_actual_cost.setText(Html.fromHtml(text10));
         gmailVH.h_p_offer_cost.setText(Html.fromHtml(text9));
@@ -146,23 +158,14 @@ public class SelectSubCategoryDetailAdapter extends RecyclerView.Adapter<SelectS
             public void onClick(View view) {
 
                // String l=context.getResources().getString(R.string.limit);
-                int pls= Integer.parseInt(gmailVH.test2.getText().toString());
-                Toast.makeText(context, "present val" + pls, Toast.LENGTH_SHORT).show();
-                if(pls<5) {
+                String l=gmailVH.qtycheck.getText().toString();
+                if (Integer.parseInt(l) > Integer.parseInt(gmailVH.c_quantity.getText().toString())) {
                     userproductadd(gmailVH,Config.mem_string,getAllProductLists.get(i).getUser_id(),getAllProductLists.get(i).getPro_id(),gmailVH.test1.getText().toString(),gmailVH.test.getText().toString());
                     //int intpls= Integer.parseInt(gmailVH.test2.getText().toString())+1 ;
-                    if(pls +1 > 5)
-                    {
-                        Toast.makeText(context, "Can not add quantity more than 5", Toast.LENGTH_SHORT).show();
-
-                    }
-
-
-                    gmailVH.test2.setText(String.valueOf(pls+1));
                 }
                 else
                 {
-                    Toast.makeText(context, "Can not add quantity more than 5", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Can not add quantity more than "+l, Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -319,11 +322,11 @@ public class SelectSubCategoryDetailAdapter extends RecyclerView.Adapter<SelectS
             @Override
             public void onClick(View view) {
 
-                Toast.makeText(context, gmailVH.test.getText().toString(), Toast.LENGTH_SHORT).show();
-                Toast.makeText(context, gmailVH.test1.getText().toString(), Toast.LENGTH_SHORT).show();
-                addtocart(Config.mem_string, getAllProductLists.get(i).getUser_id(),getAllProductLists.get(i).getPro_id(),gmailVH.test.getText().toString());
-                int intpls= Integer.parseInt(gmailVH.test2.getText().toString())+1;
-                gmailVH.test2.setText(String.valueOf(intpls));
+                //Toast.makeText(context, gmailVH.test.getText().toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, gmailVH.test1.getText().toString(), Toast.LENGTH_SHORT).show();
+
+                addtocart(gmailVH,Config.mem_string, getAllProductLists.get(i).getUser_id(),getAllProductLists.get(i).getPro_id(),gmailVH.test.getText().toString());
+
             }
         });
 
@@ -346,10 +349,10 @@ public class SelectSubCategoryDetailAdapter extends RecyclerView.Adapter<SelectS
                     // request successful (status code 200, 201)
                     UserAddProductCart result = response.body();
                     if(result.getStatus().equals("success")) {
-
                         String ttl=gmailVH.c_quantity.getText().toString();
                         gmailVH.c_quantity.setText(String.valueOf(Integer.parseInt(ttl)+1));
-
+                        txtcart=((Product)context).findViewById(R.id.cart_badge);
+                        txtcart.setText(String.valueOf(Integer.parseInt(txtcart.getText().toString())+1));
                     }
                     else
                     {
@@ -386,12 +389,11 @@ public class SelectSubCategoryDetailAdapter extends RecyclerView.Adapter<SelectS
                         //((Cart)context).callCartData();
                         String ttl = gmailVH.c_quantity.getText().toString();
                         gmailVH.c_quantity.setText(String.valueOf(Integer.parseInt(ttl) - 1));
+                        txtcart=((Product)context).findViewById(R.id.cart_badge);
+                        txtcart.setText(String.valueOf(Integer.parseInt(txtcart.getText().toString())-1));
                         if (gmailVH.c_quantity.getText().toString().equals("0")) {
-                            Intent i1 = new Intent(context, Product.class);
-                            i1.putExtra("sub_cat_id", id);
-                            i1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            i1.putExtra("sub_cat_name", name);
-                            context.startActivity(i1);
+                            gmailVH.h_p_add.setVisibility(View.VISIBLE);
+                            gmailVH.cartadd_min.setVisibility(View.GONE);
                         }
                     } else {
                         Toast.makeText(context, "Plz TRY again Later", Toast.LENGTH_SHORT).show();
@@ -407,12 +409,12 @@ public class SelectSubCategoryDetailAdapter extends RecyclerView.Adapter<SelectS
             }
         });
     }
-    private void addtocart(String mem_string, String user_id, String pro_id,String tpd_id) {
+    private void addtocart(final GmailVH gmailVH, String mem_string, String user_id, String pro_id, String tpd_id) {
         final ProgressDialog progressdialog = new ProgressDialog(context);
         progressdialog.setMessage("Please Wait....");
         progressdialog.show();
         RestClient.GitApiInterface service = RestClient.getClient();
-        Call<UserAddCart> call = service.getUserCartUnitAdd(mem_string,user_id,pro_id,tpd_id);
+        final Call<UserAddCart> call = service.getUserCartUnitAdd(mem_string,user_id,pro_id,tpd_id);
         call.enqueue(new Callback<UserAddCart>() {
             @Override
             public void onResponse(Response<UserAddCart> response) {
@@ -420,12 +422,24 @@ public class SelectSubCategoryDetailAdapter extends RecyclerView.Adapter<SelectS
                 if (response.isSuccess()) {
                     // request successful (status code 200, 201)
                     UserAddCart result = response.body();
-                    if(result.getStatus().equals("success")) {
-                       Intent i1 = new Intent(context,Product.class);
+                    if(result.getStatus().contains("success")) {
+                        String s1=response.body().getStatus().toString();
+                        s1=s1.replace("success = ","");
+                        gmailVH.test1.setText(s1);
+                        /*Intent i1 = new Intent(context,Product.class);
                        i1.putExtra("sub_cat_id",id);
                         i1.putExtra("sub_cat_name",name);
                         i1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                       context.startActivity(i1);
+                       context.startActivity(i1);*/
+                        gmailVH.cartadd_min.setVisibility(View.VISIBLE);
+                        gmailVH.c_quantity.setText("1");
+                        gmailVH.h_p_add.setVisibility(View.GONE);
+                        int intpls= Integer.parseInt(gmailVH.test2.getText().toString())+1;
+                        gmailVH.test2.setText(String.valueOf(intpls));
+                        txtcart=((Product)context).findViewById(R.id.cart_badge);
+                        txtcart.setText(String.valueOf(Integer.parseInt(txtcart.getText().toString())+1));
+                       // gmailVH.test2.setText("1");
+
                        // Intent i1 = new Intent(context.getApplicationContext(),Master_Home.class);
                        // context.startActivity(i1);
                        // ((Master_Home)context).finish();
@@ -473,7 +487,8 @@ public class SelectSubCategoryDetailAdapter extends RecyclerView.Adapter<SelectS
         ImageView unitarrow;
         TextView test,test1;
         LinearLayout unitlinear;
-        TextView test2,txtich;
+        TextView test2,txtich,qtycheck;
+        RelativeLayout l2;
 
 
         public GmailVH(View itemView) {
@@ -503,6 +518,8 @@ public class SelectSubCategoryDetailAdapter extends RecyclerView.Adapter<SelectS
             test1=(TextView)itemView.findViewById(R.id.test1);
             test2=(TextView)itemView.findViewById(R.id.test2);
             txtich = (TextView) itemView.findViewById(R.id.ich);
+            qtycheck = (TextView) itemView.findViewById(R.id.qtycheck);
+            l2=(RelativeLayout)itemView.findViewById(R.id.l2);
 
         }
 

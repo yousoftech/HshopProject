@@ -9,7 +9,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -120,7 +119,7 @@ public class CustomDataProvider {
         rootMenu.add(new Item("Change Password","4"));
         rootMenu.add(new Item("Share","5"));
         rootMenu.add(new Item("Customer Service","6"));
-        rootMenu.add(new Item("About","7"));
+        //rootMenu.add(new Item("About","7"));
         rootMenu.add(new Item("Logout","8"));
 
         return rootMenu;

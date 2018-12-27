@@ -1,9 +1,7 @@
 package com.hshop.shopping;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
@@ -24,6 +21,7 @@ import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.hshop.R;
 import com.hshop.adapter.MobileOS;
+import com.hshop.adapter.ParentAdapter;
 import com.hshop.adapter.Phone;
 import com.hshop.adapter.RecyclerAdapter;
 import com.hshop.adapter.SelectHomeDetailAdapter;
@@ -37,10 +35,10 @@ import com.hshop.models.AllHomeOffertList;
 import com.hshop.models.AllHomeProductList;
 import com.hshop.models.AllLatestHomeProductList;
 import com.hshop.models.AllProductUnitDetailsList;
+import com.hshop.models.pojo;
 import com.hshop.rest.Config;
 import com.hshop.rest.RestClient;
 import com.hshop.utils.NetworkUtils;
-import com.thoughtbot.expandablerecyclerview.models.ExpandableList;
 import com.zl.reik.dilatingdotsprogressbar.DilatingDotsProgressBar;
 
 import java.util.ArrayList;
@@ -89,6 +87,8 @@ public class Home extends Fragment implements BaseSliderView.OnSliderClickListen
 
         C0456b.f2467p3 = getActivity().getSharedPreferences(C0456b.f2907a3,0);
         String f00p3 = C0456b.f2467p3.getString("offerposter",null);
+        C0456b.f2467p5 = getActivity().getSharedPreferences(C0456b.f2907a5,0);
+        String f00p5 = C0456b.f2467p5.getString("offerpostername",null);
 
         C0456b.f2467p4 = getActivity().getSharedPreferences(C0456b.f2907a4,0);
         String f00p4 = C0456b.f2467p4.getString("offerposterid",null);
@@ -170,7 +170,7 @@ public class Home extends Fragment implements BaseSliderView.OnSliderClickListen
         adapter1.SetOnItemClickListener(new SelectHomeDetailAdapter1.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                startActivity(new Intent(getActivity(),Product.class).putExtra("sub_cat_id",getallHomeAllOfferLists.get(position).getOff_sub_id()).putExtra("sub_cat_name",getallHomeAllOfferLists.get(position).getSub_name()));
+                startActivity(new Intent(getActivity(),Product.class).putExtra("offer",getallHomeAllOfferLists.get(position).getOff_id()).putExtra("offer_name",getallHomeAllOfferLists.get(position).getOff_name()));
             }
         });
         adapter3.SetOnItemClickListener(new SelectLatestHomeDetailAdapter.OnItemClickListener() {
@@ -264,13 +264,20 @@ public class Home extends Fragment implements BaseSliderView.OnSliderClickListen
 
 
 
+                                ArrayList<pojo> event=new ArrayList<pojo>();
                                 for (int i =0 ;i<getallHomeAllExpandLists.size();i++){
+                                    pojo p=new pojo();
                                     ArrayList<Phone> iphones = new ArrayList<>();
                                     String name = getallHomeAllExpandLists.get(i).getCat_name();
                                     String description = getallHomeAllExpandLists.get(i).getCat_description();
                                     String offer = getallHomeAllExpandLists.get(i).getCat_offer();
                                     String image = getallHomeAllExpandLists.get(i).getCat_image();
-
+                                    p.setCatid(getallHomeAllExpandLists.get(i).getCat_id());
+                                    p.setCatimg(image);
+                                    p.setCatname(name);
+                                    p.setOffer(offer);
+                                    p.setDes(description);
+                                    String[] subcat = new String[getallHomeAllExpandLists.get(i).getExpandsubcat().size()];
                                     for (int j=0;j<getallHomeAllExpandLists.get(i).getExpandsubcat().size();j++)
                                     {
                                         String subname = getallHomeAllExpandLists.get(i).getExpandsubcat().get(j).getSub_name();
@@ -278,13 +285,25 @@ public class Home extends Fragment implements BaseSliderView.OnSliderClickListen
                                         String suboffer = getallHomeAllExpandLists.get(i).getExpandsubcat().get(j).getSub_offer();
                                         String subid = getallHomeAllExpandLists.get(i).getExpandsubcat().get(j).getSub_id();
                                         String subdetails = getallHomeAllExpandLists.get(i).getExpandsubcat().get(j).getSub_description();
-
+                                        subcat[j]=subid+"!-"+subname+"!-"+subimage;
                                         iphones.add(new Phone(subname+"!-"+subimage+"!-"+suboffer+"!-"+subid+"!-"+subdetails));
                                     }
+                                    if(subcat.length>0)
+                                    {
+                                        StringBuilder sc=new StringBuilder();
+                                        for(int ijt=0;ijt<subcat.length;ijt++)
+                                        {
+                                            sc.append(subcat[ijt].toString()+",!,");
+                                        }
+                                        p.setSubcat(sc.toString());
+                                    }
                                     mobileOSes.add(new MobileOS(name+"!-"+description+"!-"+offer+"!-"+image, iphones));
+                                    event.add(p);
                                 }
-                                    adapter2 = new RecyclerAdapter(getContext(),mobileOSes);
-                                recyclerView2.setAdapter(adapter2);
+                                ParentAdapter prnt=new ParentAdapter(getContext()  ,event);
+                                adapter2 = new RecyclerAdapter(getContext(),mobileOSes);
+                                recyclerView2.setAdapter(prnt);
+                                recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
                                 GridLayoutManager glm = new GridLayoutManager(getContext(), 3);
                                 glm.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                                     @Override
@@ -378,7 +397,7 @@ public class Home extends Fragment implements BaseSliderView.OnSliderClickListen
     @Override
     public void onSliderClick(BaseSliderView slider) {
         //Toast.makeText(getActivity(),slider.getBundle().get("extra") + "",Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(getActivity(),Product.class).putExtra("sub_cat_id",slider.getBundle().get("extra").toString()).putExtra("sub_cat_name","Special Offer"));
+       // startActivity(new Intent(getActivity(),Product.class).putExtra("offer",slider.getBundle().get("extra").toString()).putExtra("offer_name","Special Offer"));
     }
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
@@ -426,7 +445,12 @@ public class Home extends Fragment implements BaseSliderView.OnSliderClickListen
                                 } else {
                                     //  recyclerView.setVisibility(View.VISIBLE);
                                     //  empty_view.setVisibility(View.GONE);
-                                    int a= getallCartProductLists.size();
+                                    int qty=0;
+                                    for(int i=0;i<result.getProduct().size();i++) {
+                                        AllCartProduct jo = result.getProduct().get(i);
+                                        qty= qty+Integer.parseInt(jo.getOde_quantity());
+                                    }
+                                    int a = qty;
                                     mCartItemCount= a ;
                                     textCartItemCount.setText(a + "");
                                 }

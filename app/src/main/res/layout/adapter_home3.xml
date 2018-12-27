@@ -21,6 +21,11 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="5"
+                android:id="@+id/qtycheck"/>
 
             <TextView
                 android:id="@+id/p_store"
@@ -79,6 +84,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/l2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -266,6 +272,11 @@
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
                     android:layout_height="wrap_content" >
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:id="@+id/odeidtest"
+                        android:text="0"/>
                     <TextView
                         android:id="@+id/h_p_unit"
                         android:textColor="@color/black"

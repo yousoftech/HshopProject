@@ -8,6 +8,16 @@ import com.google.gson.annotations.SerializedName;
 
 public class AllCartProduct {
 
+    public String getQtyadd() {
+        return qtyadd;
+    }
+
+    public void setQtyadd(String qtyadd) {
+        this.qtyadd = qtyadd;
+    }
+
+    String qtyadd;
+
     @SerializedName("ode_id")
     @Expose
     private String ode_id;

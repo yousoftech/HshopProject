@@ -1,9 +1,9 @@
 package com.hshop.shopping;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,18 +12,11 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.hshop.R;
-import com.hshop.adapter.Phone;
 import com.hshop.adapter.SelectProductDetailAdapter;
 import com.hshop.models.AllCart;
 import com.hshop.models.AllCartProduct;
-import com.hshop.models.AllHomeProductList;
 import com.hshop.models.AllProductDetailsList;
 import com.hshop.models.AllProductUnitDetailsList;
 import com.hshop.models.ProductDetails;
@@ -157,9 +150,15 @@ public class Product_details extends AppCompatActivity {
                                 } else {
                                     //  recyclerView.setVisibility(View.VISIBLE);
                                     //  empty_view.setVisibility(View.GONE);
-                                    int a= getallCartProductLists.size();
-                                    mCartItemCount= a ;
-                                    textCartItemCount.setText(a + "");
+                                    int qty=0;
+                                    for(int i=0;i<result.getProduct().size();i++) {
+                                        AllCartProduct jo = result.getProduct().get(i);
+                                        qty= qty+Integer.parseInt(jo.getOde_quantity());
+                                    }
+                                        int a = qty;
+                                        mCartItemCount = a;
+                                        textCartItemCount.setText(a + "");
+
                                 }
                             } else {
                                 //recyclerView.setVisibility(View.GONE);

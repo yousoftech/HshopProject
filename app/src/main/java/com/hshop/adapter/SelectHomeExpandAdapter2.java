@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.hshop.R;
 import com.hshop.models.AllHomeExpandCatList;
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

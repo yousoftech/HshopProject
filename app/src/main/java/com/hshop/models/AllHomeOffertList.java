@@ -24,7 +24,7 @@ public class AllHomeOffertList {
     @Expose
     private String off_description;
 
-    @SerializedName("off_sub_id")
+    /*@SerializedName("off_sub_id")
     @Expose
     private String off_sub_id;
 
@@ -47,7 +47,7 @@ public class AllHomeOffertList {
     public void setOff_sub_id(String off_sub_id) {
         this.off_sub_id = off_sub_id;
     }
-
+*/
     public String getOff_id() {
         return off_id;
     }

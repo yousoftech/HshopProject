@@ -128,6 +128,10 @@ public class RestClient {
         Call<SubCategoryDetails> getFilterDetails(@Field("mem_string") String mem_string, @Field("user_id") String user_id,@Field("filter") String filter);
 
         @FormUrlEncoded
+        @POST("API/fetch_offer_details_final.php")
+        Call<SubCategoryDetails> getOfferDetails(@Field("mem_string") String mem_string, @Field("user_id") String user_id,@Field("offer") String offer);
+
+        @FormUrlEncoded
         @POST("API/fetch_product_details.php")
         Call<ProductDetails> getProductDetails(@Field("mem_string") String mem_string,@Field("pro_id") String pro_id1,@Field("user_id") String user_id1);
 

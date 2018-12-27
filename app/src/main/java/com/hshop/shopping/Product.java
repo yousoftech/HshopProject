@@ -1,12 +1,10 @@
 package com.hshop.shopping;
 
-import android.app.usage.UsageEvents;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -15,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -23,23 +22,15 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.JsonObject;
 import com.hshop.R;
-import com.hshop.adapter.MobileOS;
 import com.hshop.adapter.Phone;
-import com.hshop.adapter.RecyclerAdapter;
-import com.hshop.adapter.SelectHomeDetailAdapter1;
-import com.hshop.adapter.SelectProductDetailAdapter;
 import com.hshop.adapter.SelectSubCategoryDetailAdapter;
 import com.hshop.adapter.SubCategoryAdapterList;
 import com.hshop.models.AllCart;
 import com.hshop.models.AllCartProduct;
 import com.hshop.models.AllHome;
 import com.hshop.models.AllHomeExpandCatList;
-import com.hshop.models.AllHomeProductList;
-import com.hshop.models.AllProductDetailsList;
 import com.hshop.models.AllProductSubCategoryDetailsList;
-import com.hshop.models.AllProductSubCategoryUnitDetailsList;
 import com.hshop.models.AllProductUnitDetailsList;
 import com.hshop.models.SubCategoryDetails;
 import com.hshop.rest.Config;
@@ -60,13 +51,15 @@ import retrofit.Response;
 public class Product extends AppCompatActivity {
 
     String search;
+    SubCategoryAdapterList catadb=null;
     RecyclerView recyclerView,subcat;
     SelectSubCategoryDetailAdapter adapter;
+
     SelectSubCategoryDetailAdapter adapter1;
     List<AllProductUnitDetailsList> getallHomeAllProductUnitLists = new ArrayList<>();
 
     List<AllProductSubCategoryDetailsList> getallHomeAllProductLists = new ArrayList<>();
-
+    int eventposition=0;
     TextView empty_view;
     String user_id;
     TextView textCartItemCount;
@@ -75,13 +68,16 @@ public class Product extends AppCompatActivity {
     int mCartItemCount=0;
     List<AllCartProduct> getallCartProductLists = new ArrayList<>();
     ArrayList<SubCategoryDetails> event=new ArrayList<SubCategoryDetails>();
-    String sub_cat_id,sub_cat_name,filter=null;
+    RelativeLayout r1;
+    String sub_cat_id,sub_cat_name,recid=null,filter=null,nexsub_cat_id,nexsub_cat_name,nexfilter=null,persub_cat_id,persub_cat_name,perfilter=null,offer=null;
     private OnFeedItemClickListener onFeedItemClickListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
+
+        r1=(RelativeLayout)findViewById(R.id.r1);
 
         Intent i1 = getIntent();
         recyclerView = (RecyclerView) findViewById(R.id.gmail_list);
@@ -90,21 +86,46 @@ public class Product extends AppCompatActivity {
         {
             sub_cat_id = i1.getStringExtra("sub_cat_id");
             sub_cat_name = i1.getStringExtra("sub_cat_name");
-            filter=i1.getStringExtra("filter");
             setTitle(sub_cat_name);
+            filter=i1.getStringExtra("filter");
+            recid=i1.getStringExtra("recid");
+
+
+            try{
+                persub_cat_id = i1.getStringExtra("persub_cat_id");
+                persub_cat_name = i1.getStringExtra("persub_cat_name");
+                perfilter=i1.getStringExtra("perfilter");
+            }catch (Exception ex) {}
+
+            try{
+                nexsub_cat_id = i1.getStringExtra("nexsub_cat_id");
+                nexsub_cat_name = i1.getStringExtra("nexsub_cat_name");
+                nexfilter=i1.getStringExtra("nexfilter");
+            }catch (Exception ex) {}
+
+            if(!i1.getStringExtra("offer").equals("")) {
+            offer = i1.getStringExtra("offer");
+            setTitle(i1.getStringExtra("offer_name"));
+            }
             if(sub_cat_id==null && filter==null)
             {
                 search = i1.getStringExtra("search");
                 setTitle(search);
             }
-        }catch (Exception e)
-        {
+        }catch (Exception e) {
             try{
                 search = i1.getStringExtra("search");
                 setTitle(search);
             }catch (Exception e1)
             {
+                try {
+                    offer = i1.getStringExtra("offer");
+                    setTitle(i1.getStringExtra("offer_name"));
+                }
+                catch (Exception eo)
+                {
 
+                   }
             }
             Log.d("error",e.toString());
         }
@@ -122,14 +143,38 @@ public class Product extends AppCompatActivity {
        // cat2.setSubCategoryId( "1" );
 
 
-        recyclerView = (RecyclerView) findViewById(R.id.gmail_list);
+
         empty_view = (TextView) findViewById(R.id.empty_view);
         RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         C0456b.f2467p = getSharedPreferences(C0456b.f2907a,0);
         user_id = C0456b.f2467p.getString("user_id",null);
+       /* recyclerView.setOnTouchListener(new OnSwipeTouchListener(Product.this){
+            public void onSwipeRight() {
+                //Toast.makeText(Product.this, "right", Toast.LENGTH_SHORT).show();
+                if(eventposition>0)
+                {
+                    eventposition=eventposition-1;
+                    callEventData2(Config.mem_string, event.get(eventposition).getFilterid());
+                    setTitle(event.get(eventposition).getSubCategoryName());
+                }
+            }
+            public void onSwipeLeft() {
+                //Toast.makeText(Product.this, "left", Toast.LENGTH_SHORT).show();
+                if(eventposition<event.size())
+                {
+                    eventposition=eventposition+1;
+                    callEventData2(Config.mem_string, event.get(eventposition).getFilterid());
+                    setTitle(event.get(eventposition).getSubCategoryName());
+
+                }
+
+
+
+            }
+        });*/
+
         //String pro_id=getallHomeAllProductLists.get(position).getPro_id();
        // callEventData1(Config.mem_string,user_id);
 
@@ -137,6 +182,7 @@ public class Product extends AppCompatActivity {
         // event.add( cat );
         // event.add( cat1 );
         // event.add( cat2 );
+
 
         if (adapter == null) {
             adapter = new SelectSubCategoryDetailAdapter(Product.this,getallHomeAllProductLists,sub_cat_id,sub_cat_name);
@@ -151,7 +197,15 @@ public class Product extends AppCompatActivity {
 
         if(search==null) {
             if (filter == null) {
-                callEventData(Config.mem_string, sub_cat_id);
+                if (offer == null)
+                {
+                    setTitle(sub_cat_name);
+                    callEventData(Config.mem_string, sub_cat_id);
+                }
+                else {
+                    setTitle(i1.getStringExtra("offer_name"));
+                    callEventData3(Config.mem_string, offer);
+                }
             } else {
                 callEventData2(Config.mem_string, filter);
             }
@@ -162,7 +216,65 @@ public class Product extends AppCompatActivity {
         {
             callEventData2(Config.mem_string, search);
         }
+        //adpset();
+        if(filter!=null)
+        {
+            for(int ij=0;ij<event.size();ij++){
+
+                if((event.get(ij).getFilterid()).equals(filter));
+                {
+                    setTitle(event.get(ij).getSubCategoryName());
+                }
+            }
+        }
+        /*recyclerView.setOnTouchListener(new OnSwipeTouchListener(Product.this){
+            public void onSwipeRight() {
+                Toast.makeText(Product.this, "right", Toast.LENGTH_SHORT).show();
+                if(eventposition>0)
+                {
+                    eventposition=eventposition-1;
+                    callEventData2(Config.mem_string, event.get(eventposition).getFilterid());
+                    setTitle(event.get(eventposition).getSubCategoryName());
+                }
+            }
+            public void onSwipeLeft() {
+                Toast.makeText(Product.this, "left", Toast.LENGTH_SHORT).show();
+                if(eventposition<event.size())
+                {
+                    eventposition=eventposition+1;
+                    callEventData2(Config.mem_string, event.get(eventposition).getFilterid());
+                    setTitle(event.get(eventposition).getSubCategoryName());
+
+                }
+
+
+
+            }
+        });*/
     }
+    void adpset()
+    {
+        if(catadb!=null) {
+            subcat.smoothScrollToPosition(5);
+            catadb.notifyDataSetChanged();
+            //adapter.notifyDataSetChanged();
+        }
+        else{
+            adpset();
+        }
+
+        if(sub_cat_name.equals(""))
+        {
+
+        }
+        else{
+            setTitle(sub_cat_name);
+        }
+
+
+
+    }
+
 
     public int callCartData(String user_id) {
 
@@ -194,7 +306,12 @@ public class Product extends AppCompatActivity {
                                 } else {
                                     //  recyclerView.setVisibility(View.VISIBLE);
                                     //  empty_view.setVisibility(View.GONE);
-                                    int a= getallCartProductLists.size();
+                                    int qty=0;
+                                    for(int i=0;i<result.getProduct().size();i++) {
+                                        AllCartProduct jo = result.getProduct().get(i);
+                                        qty= qty+Integer.parseInt(jo.getOde_quantity());
+                                    }
+                                    int a = qty;
                                     mCartItemCount= a ;
                                     textCartItemCount.setText(a + "");
                                 }
@@ -390,6 +507,63 @@ public class Product extends AppCompatActivity {
 
     }
 
+    public void callEventData3(String mem_string,String offer) {
+        final DilatingDotsProgressBar mDilatingDotsProgressBar = (DilatingDotsProgressBar) findViewById(R.id.progress);
+        mDilatingDotsProgressBar.showNow();
+        RestClient.GitApiInterface service = RestClient.getClient();
+
+        Call<SubCategoryDetails> call = service.getOfferDetails(mem_string,user_id,offer);
+        call.enqueue(new Callback<SubCategoryDetails>() {
+            @Override
+            public void onResponse(Response<SubCategoryDetails> response) {
+                mDilatingDotsProgressBar.hideNow();
+                Log.d("fgh", "Status Code = " + response.code());
+                if (response.isSuccess()) {
+                    // request successful (status code 200, 201)
+                    SubCategoryDetails result = response.body();
+
+                    if (result.getStatus().equals("success")) {
+
+                        if (result.getData() != null) {
+
+                            if (result.getData().size() > 0) {
+                                getallHomeAllProductLists.clear();
+                                getallHomeAllProductLists.addAll(result.getData());
+                                adapter.notifyDataSetChanged();
+                                if (getallHomeAllProductLists.isEmpty()) {
+                                    recyclerView.setVisibility(View.GONE);
+                                    empty_view.setVisibility(View.VISIBLE);
+                                } else {
+                                    recyclerView.setVisibility(View.VISIBLE);
+                                    empty_view.setVisibility(View.GONE);
+                                }
+                            } else {
+                                recyclerView.setVisibility(View.GONE);
+                                empty_view.setVisibility(View.VISIBLE);
+                            }
+                        }
+
+                    } else {
+
+                        recyclerView.setVisibility(View.GONE);
+                        empty_view.setVisibility(View.VISIBLE);
+                    }
+
+                } else {
+                    // response received but request not successful (like 400,401,403 etc)
+
+                    recyclerView.setVisibility(View.GONE);
+                    empty_view.setVisibility(View.VISIBLE);
+                }
+            }
+            @Override
+            public void onFailure(Throwable t) {
+                mDilatingDotsProgressBar.hideNow();
+            }
+        });
+
+    }
+
     public interface OnFeedItemClickListener {
 
         public void onAdapterItemClick(int position);
@@ -419,27 +593,44 @@ public class Product extends AppCompatActivity {
 
                         if (array.length () > 0) {
                             for (int n = 0; n < array.length (); n++) {
-                                JSONObject obj = array.getJSONObject (n);
-                               String name=obj.getString("keyword");
-                                String subid=obj.getString("subcat_id");
-                                String id=obj.getString("filter_id");
+                                JSONObject obj = array.getJSONObject(n);
+                                String name = obj.getString("keyword");
+                                String subid = obj.getString("subcat_id");
+                                String id = obj.getString("filter_id");
                                 // adapCategoryProd = new categoryAdapter (this, categoryList);
                                 //recyclerView.setAdapter (adapCategoryProd);
                                 //recyclerView.setLayoutManager (new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
 
 
-                                SubCategoryDetails cat1=new SubCategoryDetails();
-                                cat1.setSubCategoryName( name );
-                                cat1.setSubCategoryId( subid );
+                                SubCategoryDetails cat1 = new SubCategoryDetails();
+                                cat1.setSubCategoryName(name);
+                                cat1.setSubCategoryId(subid);
                                 cat1.setFilterid(id);
                                 event.add(cat1);
-                                SubCategoryAdapterList catadb=new SubCategoryAdapterList( Product.this,  event);
-                                subcat.setAdapter( catadb );
-                                subcat.setLayoutManager( new LinearLayoutManager( Product.this,LinearLayoutManager.HORIZONTAL,false ) );
 
+                                    if(id.equals(filter)){
+                                        int size=event.size();
+                                        eventposition=size-1;
+                                        setTitle(name);
+                                        subcat.smoothScrollToPosition(eventposition);
+                                        //catadb.notifyDataSetChanged();
+                                    }
 
 
                             }
+
+                                catadb=new SubCategoryAdapterList( Product.this,  event);
+                                subcat.setAdapter( catadb );
+
+                                subcat.setLayoutManager( new LinearLayoutManager( Product.this,LinearLayoutManager.HORIZONTAL,false ) );
+                                //subcat.getLayoutManager().scrollToPosition();
+                                if(recid!=null)
+                                {
+                                    //subcat.smoothScrollToPosition(Integer.parseInt(recid));
+                                    subcat.getLayoutManager().scrollToPosition(Integer.parseInt(recid));
+                                }
+
+
                         }
                     }
                     else
@@ -512,7 +703,7 @@ public class Product extends AppCompatActivity {
                                         cat.setSubCategoryName( subname );
                                         cat.setSubCategoryId( subid );
                                         event.add(cat);
-                                        SubCategoryAdapterList catadb=new SubCategoryAdapterList( Product.this,  event);
+                                        catadb=new SubCategoryAdapterList( Product.this,  event);
                                         subcat.setAdapter( catadb );
                                         subcat.setLayoutManager( new LinearLayoutManager( Product.this,LinearLayoutManager.HORIZONTAL,false ) );
 

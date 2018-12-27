@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.hshop.models.AllProductDetailsList;
 import com.hshop.models.AllProductUnitDetailsList;
 import com.hshop.models.UserAddProductCart;
@@ -73,7 +74,7 @@ public class SelectProductDetailAdapter extends RecyclerView.Adapter<SelectProdu
     public void onBindViewHolder(final GmailVH gmailVH, final int i) {
         //  gmailVH.title.setText("Sample Test");
 
-        Resources res = context.getResources();
+        final Resources res = context.getResources();
       //  String text2 = String.format(res.getString(R.string.txt_message22), "Examiner", "58 Posts", "Rs. 9300-34800/- grade Pay: Rs .4600/-", "Degree in law", "30 Years", "2016-03-31");
         String text1 = String.format(res.getString(R.string.txt_message223), getAllProductLists.get(i).getPro_id());
         String text3 = String.format(res.getString(R.string.txt_message223), getAllProductLists.get(i).getPro_offer());
@@ -86,7 +87,9 @@ public class SelectProductDetailAdapter extends RecyclerView.Adapter<SelectProdu
         String text10 = String.format(res.getString(R.string.txt_message223), getAllProductLists.get(i).getPro_features());
         String text11 = String.format(res.getString(R.string.txt_message223), getAllProductLists.get(i).getPro_disclaimer());
         String text12 = String.format(res.getString(R.string.txt_message223), getAllProductLists.get(i).getPro_store());
-        String ode_id=String.format(res.getString(R.string.txt_message223), getAllProductLists.get(i).getOde_id());
+        String qtychk = String.format(res.getString(R.string.txt_message223), getAllProductLists.get(i).getQtyadd());
+        gmailVH.qtycheck.setText(qtychk);
+
         String cartval=String.format(res.getString(R.string.txt_message223),getAllProductLists.get(i).getCart_val());
         qty= Integer.parseInt(cartval);
 
@@ -94,15 +97,14 @@ public class SelectProductDetailAdapter extends RecyclerView.Adapter<SelectProdu
             @Override
             public void onClick(View view) {
 
-                String l=context.getResources().getString(R.string.limit);
-                if(Integer.parseInt(l)>qty) {
-                    userproductadd(gmailVH,Config.mem_string,getAllProductLists.get(i).getUser_id(),getAllProductLists.get(i).getPro_id(),getAllProductLists.get(i).getOde_id(),getAllProductUnitLists.get(i).getTpd_id());
-                    qty++;
+
+                String l=gmailVH.qtycheck.getText().toString();
+                if (Integer.parseInt(l) > Integer.parseInt(String.format(res.getString(R.string.txt_message223),getAllProductLists.get(i).getCart_val()))) {
+                    userproductadd(gmailVH,Config.mem_string,getAllProductLists.get(i).getUser_id(),getAllProductLists.get(i).getPro_id(), gmailVH.odetest.getText().toString(),getAllProductUnitLists.get(i).getTpd_id());
+                } else {
+                    Toast.makeText(context, "Can not add quantity more than " + l, Toast.LENGTH_SHORT).show();
                 }
-                else
-                {
-                    Toast.makeText(context, "Can not add quantity more than "+l, Toast.LENGTH_SHORT).show();
-                }
+
 
 
             }
@@ -111,8 +113,7 @@ public class SelectProductDetailAdapter extends RecyclerView.Adapter<SelectProdu
         gmailVH.c_minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userproductminus(gmailVH,Config.mem_string,getAllProductLists.get(i).getUser_id(),getAllProductLists.get(i).getPro_id(),getAllProductLists.get(i).getOde_id(),getAllProductUnitLists.get(i).getTpd_id());
-                qty--;
+                userproductminus(gmailVH,Config.mem_string,getAllProductLists.get(i).getUser_id(),getAllProductLists.get(i).getPro_id(), gmailVH.odetest.getText().toString(),getAllProductUnitLists.get(i).getTpd_id());
             }
         });
 
@@ -120,7 +121,7 @@ public class SelectProductDetailAdapter extends RecyclerView.Adapter<SelectProdu
 
         gmailVH.cartadd_min.setVisibility(View.INVISIBLE);
         gmailVH.p_add.setVisibility(View.VISIBLE);
-        /*if(Integer.parseInt(cartval)>0)
+        if(Integer.parseInt(cartval)>0)
         {
             gmailVH.cartadd_min.setVisibility(View.VISIBLE);
             gmailVH.p_add.setVisibility(View.INVISIBLE);
@@ -130,7 +131,7 @@ public class SelectProductDetailAdapter extends RecyclerView.Adapter<SelectProdu
         {
             gmailVH.cartadd_min.setVisibility(View.INVISIBLE);
             gmailVH.p_add.setVisibility(View.VISIBLE);
-        }*/
+        }
 
 
 
@@ -201,6 +202,11 @@ public class SelectProductDetailAdapter extends RecyclerView.Adapter<SelectProdu
             gmailVH.p_actual_cost.setText(getAllProductUnitLists.get(j).getTpd_actual_cost());
             gmailVH.p_offer_cost.setText(getAllProductUnitLists.get(j).getTpd_offer_cost());
             gmailVH.p_offer.setText(getAllProductUnitLists.get(j).getTpd_offer());
+            String tpdofr=getAllProductUnitLists.get(j).getTpd_offer();
+            String txt8=tpdofr.replace("SAVE ₹0","0");
+            if(txt8.equals("0")){
+                gmailVH.l2.setVisibility(View.INVISIBLE);
+            }
             gmailVH.h_p_unit.setText(getAllProductUnitLists.get(j).getTpd_unit());
                 if(getAllProductUnitLists.get(j).getTpd_image()!=null) {
                 try {
@@ -237,6 +243,7 @@ public class SelectProductDetailAdapter extends RecyclerView.Adapter<SelectProdu
             ich++;
             gmailVH.txtich.setText(String.valueOf(ich));
             unittext.setText(getAllProductUnitLists.get(j).getTpd_unit());
+            gmailVH.odetest.setText(getAllProductUnitLists.get(j).getOde_id());
             unittext.setBackgroundResource(R.drawable.edittext8);
             product_unit_id=getAllProductUnitLists.get(j).getTpd_id();
             myTextViews[j] = unittext;
@@ -249,7 +256,13 @@ public class SelectProductDetailAdapter extends RecyclerView.Adapter<SelectProdu
                             gmailVH.p_actual_cost.setText(getAllProductUnitLists.get(p).getTpd_actual_cost());
                             gmailVH.p_offer_cost.setText(getAllProductUnitLists.get(p).getTpd_offer_cost());
                             gmailVH.p_offer.setText(getAllProductUnitLists.get(p).getTpd_offer());
+                            String tpdofr=getAllProductUnitLists.get(p).getTpd_offer();
+                            String txt8=tpdofr.replace("SAVE₹0","0");
+                            if(txt8.equals("0")){
+                                gmailVH.l2.setVisibility(View.INVISIBLE);
+                            }
                             gmailVH.h_p_unit.setText(unittext.getText().toString());
+                            gmailVH.odetest.setText(getAllProductUnitLists.get(p).getOde_id());
                             if(getAllProductUnitLists.get(p).getTpd_image()!=null) {
                                 try {
                                     Picasso.with(context).load(getAllProductUnitLists.get(p).getTpd_image()).into(gmailVH.p_image);
@@ -275,7 +288,13 @@ public class SelectProductDetailAdapter extends RecyclerView.Adapter<SelectProdu
         gmailVH.p_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addtocart(Config.mem_string, getAllProductLists.get(i).getUser_id(),getAllProductLists.get(i).getPro_id(),product_unit_id);
+
+                String l=gmailVH.qtycheck.getText().toString();
+                if (Integer.parseInt(l) > Integer.parseInt(String.format(res.getString(R.string.txt_message223),getAllProductLists.get(i).getCart_val()))) {
+                    addtocart(gmailVH,Config.mem_string, getAllProductLists.get(i).getUser_id(),getAllProductLists.get(i).getPro_id(),product_unit_id);
+                } else {
+                    Toast.makeText(context, "Can not add quantity more than " + l, Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -298,7 +317,8 @@ public class SelectProductDetailAdapter extends RecyclerView.Adapter<SelectProdu
 
                         String ttl=gmailVH.c_quantity.getText().toString();
                         gmailVH.c_quantity.setText(String.valueOf(Integer.parseInt(ttl)+1));
-
+                        TextView txtcart=((Product_details)context).findViewById(R.id.cart_badge);
+                        txtcart.setText(String.valueOf(Integer.parseInt(txtcart.getText().toString())+1));
                     }
                     else
                     {
@@ -335,13 +355,18 @@ public class SelectProductDetailAdapter extends RecyclerView.Adapter<SelectProdu
                         //((Cart)context).callCartData();
                         String ttl=gmailVH.c_quantity.getText().toString();
                         gmailVH.c_quantity.setText(String.valueOf(Integer.parseInt(ttl)-1));
+                        TextView txtcart=((Product_details)context).findViewById(R.id.cart_badge);
+                        txtcart.setText(String.valueOf(Integer.parseInt(txtcart.getText().toString())-1));
                         if(gmailVH.c_quantity.getText().toString().equals("0"))
                         {
-                            Intent i1 = new Intent(context,Product_details.class);
+
+                            gmailVH.p_add.setVisibility(View.VISIBLE);
+                            gmailVH.cartadd_min.setVisibility(View.GONE);
+                            /*Intent i1 = new Intent(context,Product_details.class);
                             i1.putExtra("pro_id",pro_id);
                             i1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             i1.putExtra("pro_name",pro_name);
-                            context.startActivity(i1);
+                            context.startActivity(i1);*/
                         }
                     }
                     else
@@ -365,7 +390,7 @@ public class SelectProductDetailAdapter extends RecyclerView.Adapter<SelectProdu
 
 
 
-    private void addtocart(String mem_string, String user_id, final String pro_id, String product_unit_id) {
+    private void addtocart(final GmailVH gmailVH, String mem_string, String user_id, final String pro_id, String product_unit_id) {
 
 
         RestClient.GitApiInterface service = RestClient.getClient();
@@ -379,12 +404,26 @@ public class SelectProductDetailAdapter extends RecyclerView.Adapter<SelectProdu
                 if (response.isSuccess()) {
                     // request successful (status code 200, 201)
                     UserAddCart result = response.body();
-                    if(result.getStatus().equals("success")) {
-                         Intent i1 = new Intent(context,Product_details.class);
+                    if(result.getStatus().contains("success")) {
+
+                        String s1=response.body().getStatus().toString();
+                        s1=s1.replace("success = ","");
+                        gmailVH.odetest.setText(s1);
+                        gmailVH.p_add.setVisibility(View.GONE);
+                        gmailVH.cartadd_min.setVisibility(View.VISIBLE);
+                        gmailVH.c_quantity.setText("1");
+                        TextView txtcart=((Product_details)context).findViewById(R.id.cart_badge);
+                        txtcart.setText(String.valueOf(Integer.parseInt(txtcart.getText().toString())+1));
+
+
+                        /* Intent i1 = new Intent(context,Product_details.class);
                          i1.putExtra("pro_id",pro_id);
                         i1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                          i1.putExtra("pro_name",pro_name);
-                         context.startActivity(i1);
+                         context.startActivity(i1);*/
+
+
+
                    //     Intent i1 = new Intent(context.getApplicationContext(),Master_Home.class);
                   //      context.startActivity(i1);
                   //      ((Master_Home)context).finish();
@@ -434,8 +473,8 @@ public class SelectProductDetailAdapter extends RecyclerView.Adapter<SelectProdu
          RelativeLayout rel;
          RelativeLayout unitlin;
          ImageView unitarrow;
-         LinearLayout unitlinear;
-         TextView h_p_unit,txtich;
+         LinearLayout unitlinear,l2;
+         TextView h_p_unit,txtich,qtycheck,odetest;
 
 
 
@@ -459,12 +498,15 @@ public class SelectProductDetailAdapter extends RecyclerView.Adapter<SelectProdu
             p_disclaimer = (TextView) itemView.findViewById(R.id.p_disclaimer);
             h_p_unit = (TextView) itemView.findViewById(R.id.h_p_unit);
             p_add = (Button) itemView.findViewById(R.id.p_add);
+             odetest = (TextView) itemView.findViewById(R.id.odeidtest);
             rel=(RelativeLayout)itemView.findViewById(R.id.rel);
             unitlinear=(LinearLayout) itemView.findViewById(R.id.unitLinear);
             unitarrow=(ImageView)itemView.findViewById(R.id.unitarrow);
             unitlin=(RelativeLayout)itemView.findViewById(R.id.h_p_unitlin);
           //  spinner1 = (Spinner) itemView.findViewById(R.id.spinner1);
              txtich=(TextView)itemView.findViewById(R.id.ich);
+             qtycheck=(TextView)itemView.findViewById(R.id.qtycheck);
+             l2=(LinearLayout)itemView.findViewById(R.id.l2);
 
         }
     }

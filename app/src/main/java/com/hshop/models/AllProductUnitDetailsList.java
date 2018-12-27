@@ -8,6 +8,16 @@ import com.google.gson.annotations.SerializedName;
 
 public class AllProductUnitDetailsList {
 
+    public String getOde_id() {
+        return ode_id;
+    }
+
+    public void setOde_id(String ode_id) {
+        this.ode_id = ode_id;
+    }
+
+    String  ode_id;
+
     public String getTpd_image() {
         return tpd_image;
     }

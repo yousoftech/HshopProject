@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +27,7 @@ import com.hshop.models.UserAddProductCart;
 import com.hshop.models.UserMinusProductCart;
 import com.hshop.rest.Config;
 import com.hshop.rest.RestClient;
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -58,7 +61,7 @@ public class SelectCartDetailAdapter extends RecyclerView.Adapter<SelectCartDeta
     @Override
     public void onBindViewHolder(final GmailVH gmailVH, final int i) {
         //  gmailVH.title.setText("Sample Test");
-        Resources res = context.getResources();
+        final Resources res = context.getResources();
       //  String text2 = String.format(res.getString(R.string.txt_message22), "Examiner", "58 Posts", "Rs. 9300-34800/- grade Pay: Rs .4600/-", "Degree in law", "30 Years", "2016-03-31");
         String text1 = String.format(res.getString(R.string.txt_message223), getallCartProductLists.get(i).getOde_offer());
         String text2 = String.format(res.getString(R.string.txt_message223), getallCartProductLists.get(i).getPro_name());
@@ -66,7 +69,10 @@ public class SelectCartDetailAdapter extends RecyclerView.Adapter<SelectCartDeta
         String text4 = String.format(res.getString(R.string.txt_message223), getallCartProductLists.get(i).getOde_actual_cost());
         String text5 = String.format(res.getString(R.string.txt_message223), getallCartProductLists.get(i).getOde_offer_cost());
         String text6 = String.format(res.getString(R.string.txt_message223), getallCartProductLists.get(i).getOde_quantity());
-
+        String txt8=text1.replace("SAVE ₹0","0");
+        if(txt8.equals("0")){
+            gmailVH.l2.setVisibility(View.INVISIBLE);
+        }
         gmailVH.c_offer.setText(text1);
         gmailVH.c_name.setText(text2);
         gmailVH.c_unit.setText(text3);
@@ -89,7 +95,16 @@ public class SelectCartDetailAdapter extends RecyclerView.Adapter<SelectCartDeta
         gmailVH.c_plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userproductadd(Config.mem_string,getallCartProductLists.get(i).getUser_id(),getallCartProductLists.get(i).getOde_pro_id(),getallCartProductLists.get(i).getOde_id(),getallCartProductLists.get(i).getOde_tpd_id());
+
+                String l=String.format(res.getString(R.string.txt_message223), getallCartProductLists.get(i).getQtyadd());
+                String txtqty=gmailVH.c_quantity.getText().toString();
+                if(Integer.parseInt(l)>Integer.parseInt(txtqty)) {
+                    userproductadd(Config.mem_string, getallCartProductLists.get(i).getUser_id(), getallCartProductLists.get(i).getOde_pro_id(), getallCartProductLists.get(i).getOde_id(), getallCartProductLists.get(i).getOde_tpd_id());
+                }
+                else
+                {
+                    Toast.makeText(context, "Can not add quantity more than "+l, Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -220,6 +235,7 @@ public class SelectCartDetailAdapter extends RecyclerView.Adapter<SelectCartDeta
         ImageView c_image;
         Button c_minus;
         Button c_plus,cart;
+        LinearLayout l2;
 
 
         public GmailVH(View itemView) {
@@ -235,7 +251,7 @@ public class SelectCartDetailAdapter extends RecyclerView.Adapter<SelectCartDeta
             c_minus = (Button) itemView.findViewById(R.id.c_minus);
             c_plus = (Button) itemView.findViewById(R.id.c_plus);
             cart=(Button)itemView.findViewById(R.id.cart);
-
+            l2=(LinearLayout)itemView.findViewById(R.id.l2);
 
         }
 

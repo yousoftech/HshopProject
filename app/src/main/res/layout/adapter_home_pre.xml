@@ -14,8 +14,13 @@
         <LinearLayout
             android:layout_width="125dp"
             android:orientation="vertical"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="0dp"
             android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="5"
+                android:id="@+id/qtycheck"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -26,21 +31,26 @@
                 android:id="@+id/h_p_image"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="0dp"
-                android:layout_marginTop="10dp"
-                android:layout_height="145dp" />
+                android:layout_marginTop="7dp"
+                android:layout_height="130dp" />
          <TextView
                 android:layout_width="wrap_content"
                 android:layout_gravity="center"
              android:layout_marginRight="0dp"
                 android:text="1 Unit"
-             android:textSize="13dp"
+             android:textSize="10dp"
                 android:textAlignment="center"
                 android:background="@drawable/edittext8"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="5dp"
                 android:id="@+id/h_p_unit"
                 android:textColor="@color/black"
-                android:layout_height="26dp" />
+                android:layout_height="25dp" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/odeidtest"
+                android:visibility="gone" />
             <!--<LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
@@ -61,12 +71,12 @@
         </LinearLayout>
         <RelativeLayout
             android:layout_marginBottom="12dp"
-            android:layout_width="128dp"
+            android:layout_width="138dp"
             android:layout_height="wrap_content">
             <LinearLayout
                 android:id="@+id/l1"
                 android:layout_width="match_parent"
-                android:layout_marginTop="7dp"
+                android:layout_marginTop="5dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <TextView
@@ -74,39 +84,38 @@
                     android:layout_height="wrap_content"
                     android:text="Save "
                     android:textStyle="bold"
-                    android:textColor="@color/bg8" />
+                    android:textColor="@color/red" />
+
                 <TextView
+                    android:id="@+id/h_p_offer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="17dp"
-                    android:background="@drawable/edittext9"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
-                    android:id="@+id/h_p_offer"
+                    android:text="0"
                     android:textAlignment="center"
-                    android:text="0"/>
+                    android:textColor="@color/red"
+                    android:textSize="17dp"
+                    android:textStyle="bold" />
             </LinearLayout>
             <LinearLayout
                 android:layout_below="@id/l1"
                 android:id="@+id/l2"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:layout_marginTop="13dp"
+                android:layout_marginTop="7dp"
                 android:orientation="vertical">
                 <TextView
                     android:layout_width="match_parent"
                     android:maxLines="2"
                     android:text="Product Name"
-                    android:textStyle="bold"
                     android:id="@+id/h_p_name"
                     android:textColor="@color/bg3"
                     android:layout_height="wrap_content" />
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/l3"
-                android:layout_marginTop="7dp"
+                android:layout_marginTop="5dp"
                 android:layout_below="@id/l2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -114,24 +123,24 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#000"
+                    android:textColor="#545454"
                     android:text="MRP : "/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:text="\u20B9"
-                    android:textColor="#000"
+                    android:textColor="#545454"
                     android:layout_marginRight="3dp"
                     android:layout_height="wrap_content" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:text="304"
-                    android:textColor="#000"
+                    android:textColor="#545454"
                     android:id="@+id/h_p_actual_cost"
                     android:background="@drawable/strike"
                     android:layout_height="wrap_content" />
             </LinearLayout>
             <LinearLayout
-                android:layout_marginTop="7dp"
+                android:layout_marginTop="3dp"
                 android:id="@+id/l4"
                 android:layout_below="@id/l3"
                 android:layout_width="match_parent"
@@ -141,19 +150,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorAccent"
-                    android:textSize="17dp"
+                    android:textSize="15dp"
                     android:textStyle="bold"
                     android:text="HShop : "/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:text="\u20B9 "
-                    android:textSize="17dp"
+                    android:textSize="15dp"
                     android:textColor="@color/colorAccent"
                     android:layout_height="wrap_content" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:text="304"
-                    android:textSize="17dp"
+                    android:textSize="15dp"
                     android:id="@+id/h_p_offer_cost"
                     android:textStyle="bold"
                     android:textColor="@color/colorAccent"
@@ -163,7 +172,7 @@
                 android:visibility="gone"
                 android:id="@+id/cartadd_min"
                 android:layout_below="@id/l4"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="23dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <Button
@@ -201,7 +210,7 @@
                 android:id="@+id/h_p_add"
                 android:layout_width="wrap_content"
                 android:layout_height="27dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="23dp"
                 android:background="@drawable/edittext7"
                 android:text="ADD to cart"
                 android:textColor="@color/white"

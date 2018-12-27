@@ -3,14 +3,15 @@ package com.hshop.shopping;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hshop.R;
@@ -18,7 +19,6 @@ import com.hshop.models.UserActiveInfo;
 import com.hshop.rest.Config;
 import com.hshop.rest.RestClient;
 import com.hshop.utils.NetworkUtils;
-import com.zl.reik.dilatingdotsprogressbar.DilatingDotsProgressBar;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -29,6 +29,7 @@ public class Splash_activity extends AppCompatActivity {
     String user_id,status;
     ImageView sp_logo;
     LinearLayout linear_no_internet,linear_server;
+    TextView companytxt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +38,7 @@ public class Splash_activity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
+        companytxt=(TextView)findViewById(R.id.companytxt);
         sp_logo = (ImageView) findViewById(R.id.sp_logo);
         linear_no_internet = (LinearLayout) findViewById(R.id.linear_no_internet);
         linear_server = (LinearLayout) findViewById(R.id.linear_server);
@@ -49,6 +51,7 @@ public class Splash_activity extends AppCompatActivity {
             linear_no_internet.setVisibility(View.VISIBLE);
         }
         else {
+            companytxt.setVisibility(View.VISIBLE);
             sp_logo.setVisibility(View.VISIBLE);
             fetchactiveuser(Config.mem_string,user_id);
         }
@@ -61,6 +64,7 @@ public class Splash_activity extends AppCompatActivity {
         call.enqueue(new Callback<UserActiveInfo>() {
             public SharedPreferences.Editor f2467p4;
             public SharedPreferences.Editor f2467p3;
+            public SharedPreferences.Editor f2467p5;
 
             @Override
             public void onResponse(Response<UserActiveInfo> response) {
@@ -79,6 +83,13 @@ public class Splash_activity extends AppCompatActivity {
                         this.f2467p3 = C0456b.f2467p3.edit();
                         this.f2467p3.putString("offerposter",String.valueOf(result.getOfferposter()));
                         this.f2467p3.commit();
+
+
+                        C0456b.f2467p5 = getSharedPreferences(C0456b.f2907a5,0);
+                        String f00p5 = C0456b.f2467p5.getString("offerpostername",null);
+                        this.f2467p5 = C0456b.f2467p5.edit();
+                        this.f2467p5.putString("offerpostername",String.valueOf(result.getOfferpostername()));
+                        this.f2467p5.commit();
 
                         C0456b.f2467p4 = getSharedPreferences(C0456b.f2907a4,0);
                         String f00p4 = C0456b.f2467p4.getString("offerposterid",null);

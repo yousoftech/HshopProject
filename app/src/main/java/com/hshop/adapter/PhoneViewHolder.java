@@ -2,14 +2,11 @@ package com.hshop.adapter;
 
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hshop.R;
 import com.squareup.picasso.Picasso;
